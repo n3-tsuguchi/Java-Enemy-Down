@@ -1,8 +1,7 @@
 package plugin.enemydown.command;
 
-import java.net.http.WebSocket.Listener;
+import org.bukkit.event.Listener;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.SplittableRandom;
 import org.bukkit.Location;
@@ -11,13 +10,13 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
 
 public class EnemyDownCommand implements CommandExecutor, Listener {
 
