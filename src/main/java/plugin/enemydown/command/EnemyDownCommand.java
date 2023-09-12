@@ -1,9 +1,10 @@
 package plugin.enemydown.command;
 
-import org.bukkit.event.Listener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.SplittableRandom;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,46 +14,88 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import plugin.enemydown.Main;
+import plugin.enemydown.data.PlayerScore;
 
 
 public class EnemyDownCommand implements CommandExecutor, Listener {
 
-  private Player player;
-  private int score;
+  private Main main;
+
+  private List<PlayerScore> playerScoreList = new ArrayList<>();
+  private int gameTime = 20;
+
+  public EnemyDownCommand(Main main) {
+    this.main = main;
+  }
 
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
     if (sender instanceof Player player) {
-      this.player = player;
+      if (playerScoreList.isEmpty()) {
+        addNewPlayer(player);
+      } else {
+        for (PlayerScore playerScore : playerScoreList) {
+            if (!playerScore.getPlayerName().equals(player.getName())) {
+              addNewPlayer(player);
+            }
+        }
+      }
+      gameTime = 20;
       World world = player.getWorld();
 
       // プレイヤーの状態を初期化する。（体力と空腹度を最大値にする）
       initPlayerStatus(player);
 
-      world.spawnEntity(getEnemySpawnLocation(player, world), getEnemy());
+      Bukkit.getScheduler().runTaskTimer(main, Runnable -> {
+        if (gameTime <= 0) {
+          Runnable.cancel();
+          player.sendMessage("ゲームが終了しました。");
+          return;
+        }
+        world.spawnEntity(getEnemySpawnLocation(player, world), getEnemy());
+        gameTime -= 5;
+      }, 0, 5 * 20);
     }
     return false;
   }
 
+
+
   @EventHandler
   public void onEntityDeath(EntityDeathEvent e) {
     Player player = e.getEntity().getKiller();
-    if (Objects.isNull(player)) {
-      return;
-    }
-    if (Objects.isNull(this.player)) {
+    if (Objects.isNull(player) || playerScoreList.isEmpty()) {
       return;
     }
 
-    if (this.player.getName().equals(player.getName())) {
-      score += 10;
-      player.sendMessage("敵を倒した！現在のスコアは" + score + "点！");
+    for (PlayerScore playerScore : playerScoreList) {
+      if (playerScore.getPlayerName().equals(player.getName())) {
+        playerScore.setScore(playerScore.getScore() + 10);
+        player.sendMessage("敵を倒した！現在のスコアは" + playerScore.getScore() + "点！");
+      }
     }
   }
+
+
+
+  /**
+   * 新規のプレイヤー情報をリストに追加します。
+   *
+   * @param player　コマンドを実行したプレイヤー
+   */
+  private void addNewPlayer(Player player) {
+    PlayerScore newPlayer= new PlayerScore();
+    newPlayer.setPlayerName(player.getName());
+    playerScoreList.add(newPlayer);
+  }
+
 
   /**
    * ゲームを始める前にプレイヤーの状態を設定する。
@@ -80,7 +123,7 @@ public class EnemyDownCommand implements CommandExecutor, Listener {
    *
    * @param player　こまんどを実行したプレイヤー
    * @param world　コマンドを実行したプレイヤーが所属するワールド
-   * @return　敵の出現場所
+   * @return 敵の出現場所
    */
 
 
