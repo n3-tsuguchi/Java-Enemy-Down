@@ -3,12 +3,13 @@ package plugin.enemydown.command;
 import java.util.List;
 import java.util.SplittableRandom;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public class EnemySpawnCommand extends BaseCommand implements Listener {
+public abstract class EnemySpawnCommand extends BaseCommand implements Listener {
 
   @Override
   public boolean onExecutePlayerCommand(Player player) {
@@ -17,7 +18,7 @@ public class EnemySpawnCommand extends BaseCommand implements Listener {
   }
 
   @Override
-  public boolean onExecuteNPCCommand(CommandSender sender) {
+  public boolean onExecuteNPCCommand(CommandSender sender, String label, String[] args) {
     return false;
   }
 
@@ -47,5 +48,15 @@ public class EnemySpawnCommand extends BaseCommand implements Listener {
   private EntityType getEnemy() {
     List<EntityType> enemyList = List.of(EntityType.ZOMBIE, EntityType.SKELETON, EntityType.WITCH);
     return enemyList.get(new SplittableRandom().nextInt(enemyList.size()));
+  }
+
+  @Override
+  public boolean onExecutePlayerCommand(Player player, Command command, String label, String[] args) {
+    return false;
+  }
+
+  @Override
+  public boolean onExecuteNPCCommand(CommandSender sender, Command command, String label, String[] args) {
+    return false;
   }
 }
