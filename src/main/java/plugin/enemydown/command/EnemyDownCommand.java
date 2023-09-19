@@ -62,9 +62,9 @@ public abstract class  EnemyDownCommand extends BaseCommand implements Listener 
     if (args.length == 1 && LIST.equals(args[0])) {
 
       try (Connection con = DriverManager.getConnection(
-          "jdbc:mysql://localhost:3306/spigot_server?characterEncoding=utf8&serverTimezone=JST",
+          "jdbc:mysql://localhost:3306/spigot_server",
           "root",
-          "root");
+          "zgaudam91");
           Statement statement = con.createStatement();
           ResultSet resultset = statement.executeQuery("select * from player_score;")) {
         while (resultset.next()) {
