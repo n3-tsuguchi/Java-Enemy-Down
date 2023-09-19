@@ -230,6 +230,20 @@ public abstract class  EnemyDownCommand extends BaseCommand implements Listener 
         spwanEntityList.forEach(Entity::remove);
         spwanEntityList.clear();
 
+        try (Connection con = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/spigot_server",
+            "root",
+            "zgaudam91");
+            Statement statement = con.createStatement()) {
+          statement.executeUpdate(
+              "insert into player_score (player_name, score, difficulty, registered_at) "
+                  + "values ('" + nowPlayerScore.getPlayerName() + "', " + nowPlayerScore.getScore() + ", '"
+                  + difficulty + "', '" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "');");
+
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+
         removePotionEffect(player);
         return;
       }
