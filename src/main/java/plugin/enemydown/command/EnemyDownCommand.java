@@ -62,7 +62,7 @@ public abstract class  EnemyDownCommand extends BaseCommand implements Listener 
     if (args.length == 1 && LIST.equals(args[0])) {
 
       try (Connection con = DriverManager.getConnection(
-          "jbdc:mysql://localhost:3306/enemydown?characterEncoding=utf8&serverTimezone=JST",
+          "jdbc:mysql://localhost:3306/spigot_server?characterEncoding=utf8&serverTimezone=JST",
           "root",
           "root");
           Statement statement = con.createStatement();
