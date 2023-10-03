@@ -113,7 +113,7 @@ public abstract class  EnemyDownCommand extends BaseCommand implements Listener 
    * @param args　コマンド引数
    * @return  難易度
    */
-  private String getDifficulty(Player player, String[] args) {
+   String getDifficulty(Player player, String[] args) {
     if (args.length == 1 && (EASY.equals(args[0]) || NORMAL.equals(args[0]) || HARD.equals(args[0]))) {
       String difficulty;
       return difficulty = args[0];
